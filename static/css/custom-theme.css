@@ -1,0 +1,28 @@
+/* Custom Bootstrap theme overriding primary and secondary colors */
+:root {
+  --bs-primary: #FF9900;
+  --bs-primary-rgb: 255, 153, 0;
+  --bs-secondary: #D3E9F8;
+  --bs-secondary-rgb: 211, 233, 248;
+}
+
+body {
+  font-family: 'Inter', 'Montserrat', 'Golos Text', sans-serif;
+}
+
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--bs-primary);
+  --bs-btn-border-color: var(--bs-primary);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #e68a00;
+  --bs-btn-hover-border-color: #e68a00;
+}
+
+.bg-primary {
+  background-color: var(--bs-primary) !important;
+}
+
+.bg-secondary {
+  background-color: var(--bs-secondary) !important;
+}
