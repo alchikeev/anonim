@@ -1,0 +1,4 @@
+[
+  {"model": "reports.problemtype", "pk": 1, "fields": {"name": "Bullying"}},
+  {"model": "reports.problemtype", "pk": 2, "fields": {"name": "Vandalism"}}
+]

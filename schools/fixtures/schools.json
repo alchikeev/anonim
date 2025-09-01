@@ -1,0 +1,12 @@
+[
+  {
+    "model": "districts.district",
+    "pk": 1,
+    "fields": {"name": "Central District"}
+  },
+  {
+    "model": "schools.school",
+    "pk": 1,
+    "fields": {"name": "Sample School", "district": 1}
+  }
+]
