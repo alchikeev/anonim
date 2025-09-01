@@ -1,0 +1,8 @@
+<h1>Submit Report - Step 2</h1>
+<p>School: {{ school.name }}</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.media }}
+  {{ form.as_p }}
+  <button type="submit">Submit</button>
+</form>
