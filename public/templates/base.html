@@ -1,0 +1,30 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}{{ page.title|default:"Site" }}{% endblock %}</title>
+</head>
+<body>
+<nav>
+    <ul>
+        <li><a href="{% url 'public:home' %}">{% trans "Home" %}</a></li>
+        <li><a href="{% url 'public:about' %}">{% trans "About" %}</a></li>
+        <li><a href="{% url 'public:contact' %}">{% trans "Contact" %}</a></li>
+    </ul>
+    <form action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}" />
+        <select name="language" onchange="this.form.submit()">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% for lang in LANGUAGES %}
+                <option value="{{ lang.0 }}"{% if lang.0 == LANGUAGE_CODE %} selected{% endif %}>{{ lang.1 }}</option>
+            {% endfor %}
+        </select>
+    </form>
+</nav>
+{% block content %}{% endblock %}
+</body>
+</html>
+
