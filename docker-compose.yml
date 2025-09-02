@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    expose:
+      - "8000"
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    env_file:
+      - .env.prod
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py init_data &&
+             python manage.py init_new_pages &&
+             gunicorn --bind 0.0.0.0:8000 --workers 3 anonim_mektep.wsgi:application"
+    restart: unless-stopped
+    networks:
+      - anonim_network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  static_volume:
+  media_volume:
+
+networks:
+  anonim_network:
+    driver: bridge

@@ -2,13 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Count
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from .models import School, EditablePage
 from dashboard.models import Message, InternalComment
-from .forms import SendMessageForm, ProblemTypeForm
 from .admin_forms import SchoolForm, UserForm
 
 User = get_user_model()
@@ -35,51 +33,54 @@ def admin_logout(request):
     logout(request)
     return redirect('admin_login')
 
-@login_required
-def admin_dashboard(request):
-    # Фильтрация по ролям
-    if request.user.role == 'teacher':
-        # Учитель видит только сообщения своей школы
-        messages_queryset = Message.objects.filter(school=request.user.school)
-    elif request.user.role == 'rayon_otdel':
-        # Районный отдел видит все сообщения
-        messages_queryset = Message.objects.all()
+def _get_messages_queryset(user):
+    """Универсальная функция для получения queryset сообщений по роли пользователя"""
+    if user.role == 'teacher':
+        return Message.objects.filter(school=user.school)
     else:
-        # Супер-админ видит все сообщения
-        messages_queryset = Message.objects.all()
-    
-    # Статистика
-    stats = {
+        return Message.objects.all()
+
+def _get_message_statistics(messages_queryset):
+    """Универсальная функция для получения статистики сообщений"""
+    return {
         'new_messages': messages_queryset.filter(status='new').count(),
         'in_progress': messages_queryset.filter(status='in_progress').count(),
         'resolved': messages_queryset.filter(status='resolved').count(),
         'total_messages': messages_queryset.count(),
     }
+
+def _get_general_school():
+    """Получение школы для общих сообщений"""
+    from core.models import School
+    return School.objects.filter(unique_code='general').first()
+
+def _check_admin_access(user, allowed_roles=None):
+    """Универсальная функция для проверки доступа администратора"""
+    if allowed_roles is None:
+        allowed_roles = ['super_admin', 'rayon_otdel']
+    
+    return (user.role in allowed_roles or user.is_superuser)
+
+@login_required
+def admin_dashboard(request):
+    # Получаем queryset сообщений по роли
+    messages_queryset = _get_messages_queryset(request.user)
+    
+    # Основная статистика
+    stats = _get_message_statistics(messages_queryset)
     
     # Для районного отдела - отдельная статистика по общим сообщениям
     rayon_stats = None
+    recent_general_messages = None
     if request.user.role == 'rayon_otdel':
-        from core.models import School
-        general_school = School.objects.filter(unique_code='general').first()
+        general_school = _get_general_school()
         if general_school:
             general_messages = Message.objects.filter(school=general_school)
-            rayon_stats = {
-                'general_new': general_messages.filter(status='new').count(),
-                'general_in_progress': general_messages.filter(status='in_progress').count(),
-                'general_resolved': general_messages.filter(status='resolved').count(),
-                'general_total': general_messages.count(),
-            }
+            rayon_stats = _get_message_statistics(general_messages)
+            recent_general_messages = general_messages.order_by('-created_at')[:5]
     
     # Последние сообщения
     recent_messages = messages_queryset.order_by('-created_at')[:5]
-    
-    # Для районного отдела - последние общие сообщения
-    recent_general_messages = None
-    if request.user.role == 'rayon_otdel':
-        from core.models import School
-        general_school = School.objects.filter(unique_code='general').first()
-        if general_school:
-            recent_general_messages = Message.objects.filter(school=general_school).order_by('-created_at')[:5]
     
     context = {
         'stats': stats,
@@ -92,11 +93,8 @@ def admin_dashboard(request):
 
 @login_required
 def admin_messages(request):
-    # Фильтрация по ролям
-    if request.user.role == 'teacher':
-        messages_queryset = Message.objects.filter(school=request.user.school)
-    else:
-        messages_queryset = Message.objects.all()
+    # Получаем queryset сообщений по роли
+    messages_queryset = _get_messages_queryset(request.user)
     
     # Применяем фильтры
     school_filter = request.GET.get('school')
@@ -113,8 +111,7 @@ def admin_messages(request):
     
     # Фильтр для сообщений в районный отдел
     if general_only == 'true':
-        from core.models import School
-        general_school = School.objects.filter(unique_code='general').first()
+        general_school = _get_general_school()
         if general_school:
             messages_queryset = messages_queryset.filter(school=general_school)
     
@@ -172,7 +169,7 @@ def admin_message_detail(request, message_id):
 
 @login_required
 def admin_schools(request):
-    if request.user.role not in ['super_admin', 'rayon_otdel'] and not request.user.is_superuser:
+    if not _check_admin_access(request.user):
         messages.error(request, 'У вас нет доступа к этой странице.')
         return redirect('admin_dashboard')
     
@@ -186,7 +183,7 @@ def admin_schools(request):
 
 @login_required
 def add_school(request):
-    if request.user.role not in ['super_admin', 'rayon_otdel'] and not request.user.is_superuser:
+    if not _check_admin_access(request.user):
         return JsonResponse({'success': False, 'error': 'Нет доступа'})
     
     if request.method == 'POST':
@@ -207,7 +204,7 @@ def add_school(request):
 
 @login_required
 def edit_school(request, school_id):
-    if request.user.role not in ['super_admin', 'rayon_otdel'] and not request.user.is_superuser:
+    if not _check_admin_access(request.user):
         return JsonResponse({'success': False, 'error': 'Нет доступа'})
     
     school = get_object_or_404(School, id=school_id)
@@ -237,7 +234,7 @@ def edit_school(request, school_id):
 
 @login_required
 def delete_school(request, school_id):
-    if request.user.role not in ['super_admin', 'rayon_otdel'] and not request.user.is_superuser:
+    if not _check_admin_access(request.user):
         return JsonResponse({'success': False, 'error': 'Нет доступа'})
     
     school = get_object_or_404(School, id=school_id)
@@ -261,7 +258,7 @@ def delete_school(request, school_id):
 
 @login_required
 def admin_users(request):
-    if request.user.role not in ['super_admin', 'rayon_otdel'] and not request.user.is_superuser:
+    if not _check_admin_access(request.user):
         messages.error(request, 'У вас нет доступа к этой странице.')
         return redirect('admin_dashboard')
     
@@ -278,7 +275,7 @@ def admin_users(request):
 
 @login_required
 def add_user(request):
-    if request.user.role not in ['super_admin', 'rayon_otdel'] and not request.user.is_superuser:
+    if not _check_admin_access(request.user):
         return JsonResponse({'success': False, 'error': 'Нет доступа'})
     
     if request.method == 'POST':
@@ -298,7 +295,7 @@ def add_user(request):
 
 @login_required
 def edit_user(request, user_id):
-    if request.user.role not in ['super_admin', 'rayon_otdel'] and not request.user.is_superuser:
+    if not _check_admin_access(request.user):
         return JsonResponse({'success': False, 'error': 'Нет доступа'})
     
     user = get_object_or_404(User, id=user_id)
@@ -332,7 +329,7 @@ def edit_user(request, user_id):
 
 @login_required
 def delete_user(request, user_id):
-    if request.user.role not in ['super_admin', 'rayon_otdel'] and not request.user.is_superuser:
+    if not _check_admin_access(request.user):
         return JsonResponse({'success': False, 'error': 'Нет доступа'})
     
     user = get_object_or_404(User, id=user_id)

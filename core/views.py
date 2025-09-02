@@ -1,11 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
 from django.utils import translation
 from django.conf import settings
 from django.contrib import messages
-from django.http import JsonResponse
-from django.urls import reverse
-import os
 
 from .forms import SendMessageForm, ProblemTypeForm
 from .models import School, EditablePage
@@ -25,31 +21,29 @@ def send_message_info(request):
         'domain': domain,
     })
 
-def index(request):
-    """Главная страница с статистикой платформы"""
-    # Получаем статистику сообщений
-    total_messages = Message.objects.count()
-    pending_messages = Message.objects.filter(status='pending').count()
-    in_progress_messages = Message.objects.filter(status='in_progress').count()
-    resolved_messages = Message.objects.filter(status='resolved').count()
-    
-    # Статистика по типам проблем
-    bullying_count = Message.objects.filter(problem_type='bullying').count()
-    extortion_count = Message.objects.filter(problem_type='extortion').count()
-    harassment_count = Message.objects.filter(problem_type='harassment').count()
-    other_count = Message.objects.filter(problem_type='other').count()
-    
-    context = {
-        'total_messages': total_messages,
-        'pending_messages': pending_messages,
-        'in_progress_messages': in_progress_messages,
-        'resolved_messages': resolved_messages,
-        'bullying_count': bullying_count,
-        'extortion_count': extortion_count,
-        'harassment_count': harassment_count,
-        'other_count': other_count,
+def _get_message_statistics():
+    """Универсальная функция для получения статистики сообщений"""
+    # Статистика по статусам
+    status_stats = {
+        'total_messages': Message.objects.count(),
+        'pending_messages': Message.objects.filter(status='pending').count(),
+        'in_progress_messages': Message.objects.filter(status='in_progress').count(),
+        'resolved_messages': Message.objects.filter(status='resolved').count(),
     }
     
+    # Статистика по типам проблем
+    problem_stats = {
+        'bullying_count': Message.objects.filter(problem_type='bullying').count(),
+        'extortion_count': Message.objects.filter(problem_type='extortion').count(),
+        'harassment_count': Message.objects.filter(problem_type='harassment').count(),
+        'other_count': Message.objects.filter(problem_type='other').count(),
+    }
+    
+    return {**status_stats, **problem_stats}
+
+def index(request):
+    """Главная страница с статистикой платформы"""
+    context = _get_message_statistics()
     return render(request, 'core/index.html', context)
 
 def set_language(request):
@@ -60,95 +54,79 @@ def set_language(request):
 			request.session['django_language'] = language
 	return redirect(request.META.get('HTTP_REFERER', '/'))
 
-def about(request):
+def _get_or_create_page(page_key, title, default_content):
+	"""Универсальная функция для получения или создания страницы"""
 	try:
-		page = EditablePage.objects.get(page='about', language=translation.get_language())
+		page = EditablePage.objects.get(page=page_key, language=translation.get_language())
 	except EditablePage.DoesNotExist:
-		# Создаем дефолтную страницу если не существует
 		page = EditablePage.objects.create(
-			page='about',
+			page=page_key,
 			language=translation.get_language(),
-			title='О проекте',
-			content='Аноним Мектеп — это платформа, созданная для поддержки школьников, учителей и родителей. Здесь вы можете получить консультацию, поделиться проблемой или узнать полезную информацию, сохраняя анонимность.'
+			title=title,
+			content=default_content
 		)
+	return page
+
+def about(request):
+	page = _get_or_create_page(
+		'about', 
+		'О проекте', 
+		'Аноним Мектеп — это платформа, созданная для поддержки школьников, учителей и родителей. Здесь вы можете получить консультацию, поделиться проблемой или узнать полезную информацию, сохраняя анонимность.'
+	)
 	return render(request, 'core/about.html', {'page': page})
 
 def faq(request):
-	try:
-		page = EditablePage.objects.get(page='faq', language=translation.get_language())
-	except EditablePage.DoesNotExist:
-		page = EditablePage.objects.create(
-			page='faq',
-			language=translation.get_language(),
-			title='Часто задаваемые вопросы',
-			content='<ul><li><strong>Как работает анонимность?</strong> Ваши сообщения не содержат личных данных и не отслеживаются.</li><li><strong>Кто может воспользоваться сервисом?</strong> Любой школьник, учитель или родитель.</li><li><strong>Как получить ответ?</strong> Ответ поступит на указанный вами способ связи или будет опубликован на сайте.</li></ul>'
-		)
+	page = _get_or_create_page(
+		'faq', 
+		'Часто задаваемые вопросы', 
+		'<ul><li><strong>Как работает анонимность?</strong> Ваши сообщения не содержат личных данных и не отслеживаются.</li><li><strong>Кто может воспользоваться сервисом?</strong> Любой школьник, учитель или родитель.</li><li><strong>Как получить ответ?</strong> Ответ поступит на указанный вами способ связи или будет опубликован на сайте.</li></ul>'
+	)
 	return render(request, 'core/faq.html', {'page': page})
 
 def contacts(request):
-	try:
-		page = EditablePage.objects.get(page='contacts', language=translation.get_language())
-	except EditablePage.DoesNotExist:
-		page = EditablePage.objects.create(
-			page='contacts',
-			language=translation.get_language(),
-			title='Полезные контакты',
-			content='<ul><li>Телефон доверия: <a href="tel:150">150</a></li><li>Министерство образования: <a href="https://edu.gov.kg/">edu.gov.kg</a></li><li>Психологическая помощь: <a href="tel:142">142</a></li><li>Экстренная помощь: <a href="tel:112">112</a></li></ul>'
-		)
+	page = _get_or_create_page(
+		'contacts', 
+		'Полезные контакты', 
+		'<ul><li>Телефон доверия: <a href="tel:150">150</a></li><li>Министерство образования: <a href="https://edu.gov.kg/">edu.gov.kg</a></li><li>Психологическая помощь: <a href="tel:142">142</a></li><li>Экстренная помощь: <a href="tel:112">112</a></li></ul>'
+	)
 	return render(request, 'core/contacts.html', {'page': page})
 
 def what_to_do(request):
-	try:
-		page = EditablePage.objects.get(page='what_to_do', language=translation.get_language())
-	except EditablePage.DoesNotExist:
-		page = EditablePage.objects.create(
-			page='what_to_do',
-			language=translation.get_language(),
-			title='Что делать, если...',
-			content='<ul><li>...вы столкнулись с буллингом — обратитесь к школьному психологу или напишите нам анонимно.</li><li>...заметили нарушение — сообщите администрации или используйте форму на сайте.</li><li>...нужна срочная помощь — позвоните на горячую линию.</li><li>...вас вымогают деньги — немедленно сообщите родителям и в полицию.</li></ul>'
-		)
+	page = _get_or_create_page(
+		'what_to_do', 
+		'Что делать, если...', 
+		'<ul><li>...вы столкнулись с буллингом — обратитесь к школьному психологу или напишите нам анонимно.</li><li>...заметили нарушение — сообщите администрации или используйте форму на сайте.</li><li>...нужна срочная помощь — позвоните на горячую линию.</li><li>...вас вымогают деньги — немедленно сообщите родителям и в полицию.</li></ul>'
+	)
 	return render(request, 'core/what_to_do.html', {'page': page})
 
 
 def knowledge_base(request):
 	"""База знаний"""
-	try:
-		page = EditablePage.objects.get(page='knowledge_base', language=translation.get_language())
-	except EditablePage.DoesNotExist:
-		page = EditablePage.objects.create(
-			page='knowledge_base',
-			language=translation.get_language(),
-			title='База знаний',
-			content='<p>База знаний по вопросам безопасности в школах, профилактике буллинга и другим темам.</p>'
-		)
+	page = _get_or_create_page(
+		'knowledge_base', 
+		'База знаний', 
+		'<p>База знаний по вопросам безопасности в школах, профилактике буллинга и другим темам.</p>'
+	)
 	return render(request, 'core/knowledge_base.html', {'page': page})
 
 
 def service_contacts(request):
 	"""Контакты служб"""
-	try:
-		page = EditablePage.objects.get(page='service_contacts', language=translation.get_language())
-	except EditablePage.DoesNotExist:
-		page = EditablePage.objects.create(
-			page='service_contacts',
-			language=translation.get_language(),
-			title='Контакты служб',
-			content='<p>Контактная информация служб поддержки, психологов, правоохранительных органов.</p>'
-		)
+	page = _get_or_create_page(
+		'service_contacts', 
+		'Контакты служб', 
+		'<p>Контактная информация служб поддержки, психологов, правоохранительных органов.</p>'
+	)
 	return render(request, 'core/service_contacts.html', {'page': page})
 
 
 def instructions(request):
 	"""Инструкции"""
-	try:
-		page = EditablePage.objects.get(page='instructions', language=translation.get_language())
-	except EditablePage.DoesNotExist:
-		page = EditablePage.objects.create(
-			page='instructions',
-			language=translation.get_language(),
-			title='Инструкции',
-			content='<p>Пошаговые инструкции по использованию платформы "Аноним Мектеп".</p>'
-		)
+	page = _get_or_create_page(
+		'instructions', 
+		'Инструкции', 
+		'<p>Пошаговые инструкции по использованию платформы "Аноним Мектеп".</p>'
+	)
 	return render(request, 'core/instructions.html', {'page': page})
 
 

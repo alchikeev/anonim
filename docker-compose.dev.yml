@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    env_file:
+      - .env.dev
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py init_data &&
+             python manage.py init_new_pages &&
+             python manage.py runserver 0.0.0.0:8000"
+    restart: unless-stopped
+
+volumes:
+  static_volume:
+  media_volume:
