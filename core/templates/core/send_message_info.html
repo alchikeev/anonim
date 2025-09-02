@@ -1,0 +1,112 @@
+{% extends 'core/base.html' %}
+{% block title %}Как отправить сообщение — Аноним Мектеп{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bold text-primary mb-3">Как отправить сообщение</h1>
+                <p class="lead">Выберите способ отправки сообщения</p>
+            </div>
+            
+            <!-- Способ 1: QR-код школы -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center">
+                            <i class="bi bi-qr-code text-primary" style="font-size: 4rem;"></i>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="card-title mb-3">1. QR-код вашей школы</h3>
+                            <p class="card-text mb-3">Отсканируйте QR-код, который размещен в вашей школе. Каждая школа имеет свой уникальный код для отправки сообщений.</p>
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Где найти:</strong> QR-коды размещены в коридорах, классах и на информационных стендах школы.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Способ 2: Уникальная ссылка -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center">
+                            <i class="bi bi-link-45deg text-success" style="font-size: 4rem;"></i>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="card-title mb-3">2. Уникальная ссылка школы</h3>
+                            <p class="card-text mb-3">Получите уникальную ссылку от администрации школы или учителя для отправки сообщения.</p>
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <strong>Важно:</strong> Используйте только ссылку вашей школы. Сообщения с других школ не будут обработаны.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Способ 3: Общее сообщение -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center">
+                            <i class="bi bi-building text-warning" style="font-size: 4rem;"></i>
+                        </div>
+                        <div class="col-md-9">
+                            <h3 class="card-title mb-3">3. Общее сообщение в районный отдел</h3>
+                            <p class="card-text mb-3">Если у вас нет доступа к QR-коду или ссылке школы, вы можете отправить общее сообщение в районный отдел образования.</p>
+                            <div class="alert alert-success">
+                                <i class="bi bi-shield-check me-2"></i>
+                                <strong>Безопасно:</strong> Ваше сообщение будет полностью анонимным и попадет к специалистам районного отдела.
+                            </div>
+                            <div class="text-center mt-3">
+                                <a href="{% url 'send_message' 'general' %}" class="btn btn-warning btn-lg">
+                                    <i class="bi bi-send me-2"></i>Отправить общее сообщение
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Информация о безопасности -->
+            <div class="card border-0 bg-light">
+                <div class="card-body p-4">
+                    <h5 class="card-title text-center mb-3">
+                        <i class="bi bi-shield-check text-success me-2"></i>
+                        Гарантии безопасности
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>Полная анонимность</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>Не сохраняем IP-адреса</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>Защищенное соединение</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>Проверка безопасности</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

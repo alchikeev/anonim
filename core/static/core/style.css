@@ -1,0 +1,293 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap');
+
+/* Основные цвета */
+:root {
+    --cream: #FFFEF8;
+    --white: #FFFFFF;
+    --green: #9EE878;
+    --purple: #4915B7;
+    --black: #262626;
+    --grey: #4B5262;
+}
+
+/* Базовые стили */
+body {
+    font-family: 'Inter Tight', Arial, sans-serif;
+    background: var(--cream);
+    color: var(--black);
+    line-height: 1.6;
+}
+
+/* Навигация */
+.navbar {
+    background: var(--white);
+    border-bottom: 2px solid var(--green);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    color: var(--purple) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    color: var(--black) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--purple) !important;
+}
+
+/* Кнопки */
+.btn-primary {
+    background-color: var(--green);
+    border-color: var(--green);
+    color: var(--black);
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--purple);
+    border-color: var(--purple);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(73, 21, 183, 0.3);
+}
+
+.btn-outline-primary {
+    border-color: var(--purple);
+    color: var(--purple);
+    font-weight: 500;
+    border-radius: 8px;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--purple);
+    border-color: var(--purple);
+    color: var(--white);
+}
+
+.btn-outline-secondary {
+    border-color: var(--grey);
+    color: var(--grey);
+    font-weight: 500;
+    border-radius: 8px;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--grey);
+    border-color: var(--grey);
+    color: var(--white);
+}
+
+/* Карточки */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+/* Формы */
+.form-control, .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 0.2rem rgba(158, 232, 120, 0.25);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+}
+
+/* Радио кнопки для выбора типа проблемы */
+.radio-options {
+    display: grid;
+    gap: 1rem;
+}
+
+.radio-option {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--white);
+}
+
+.radio-option:hover {
+    border-color: var(--green);
+    background-color: #f8fff4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(158, 232, 120, 0.2);
+}
+
+.radio-option input[type="radio"] {
+    margin-right: 0.75rem;
+    transform: scale(1.2);
+}
+
+.radio-option.selected {
+    border-color: var(--green);
+    background-color: #f0fff4;
+    box-shadow: 0 4px 12px rgba(158, 232, 120, 0.3);
+}
+
+.radio-option label {
+    font-weight: 500;
+    color: var(--black);
+    cursor: pointer;
+    margin: 0;
+}
+
+/* Алерты */
+.alert {
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+}
+
+.alert-info {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+.alert-success {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+}
+
+/* Футер */
+.footer {
+    background: var(--purple);
+    color: var(--white);
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: 4rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+    
+    .card {
+        margin: 0 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .d-md-flex .btn {
+        width: auto;
+    }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Иконки */
+.bi {
+    font-size: 1.2em;
+}
+
+/* Заголовки */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--black);
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+/* Контент */
+.content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.content p {
+    margin-bottom: 1.5rem;
+}
+
+.content ul {
+    padding-left: 1.5rem;
+}
+
+.content li {
+    margin-bottom: 0.75rem;
+}
+
+/* Статистика */
+.stats-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.stats-icon {
+    transition: transform 0.3s ease;
+}
+
+.stats-icon:hover {
+    transform: scale(1.1);
+}
+
+.stats-section .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stats-section .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+/* Анимация счетчиков */
+@keyframes countUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.stats-section h3, .stats-section h5 {
+    animation: countUp 0.8s ease-out;
+}

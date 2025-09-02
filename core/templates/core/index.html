@@ -1,0 +1,187 @@
+{% extends 'core/base.html' %}
+{% block title %}Главная — Аноним Мектеп{% endblock %}
+{% block content %}
+<div class="hero-section text-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4 text-primary">Аноним Мектеп</h1>
+                <p class="lead mb-5 fs-5">Не держи несправедливость в себе</p>
+                <p class="mb-5 text-muted">Безопасное и анонимное пространство для обращения за помощью и информацией. Увидел нарушение — сообщи.</p>
+                
+                <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                    <a href="/send-message/" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-info-circle me-2"></i>Как отправить сообщение
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-qr-code text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title">QR-код школы</h5>
+                        <p class="card-text">Отсканируйте QR-код в вашей школе для отправки сообщения. Каждая школа имеет свой уникальный код.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title">Полная анонимность</h5>
+                        <p class="card-text">Ваши сообщения не содержат личных данных и не отслеживаются. Мы не сохраняем IP-адреса или другую идентифицирующую информацию.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="bi bi-clock text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title">Быстрая помощь</h5>
+                        <p class="card-text">Сообщения мгновенно передаются администрации школы и районному отделу образования для оперативного реагирования.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Статистика -->
+<div class="stats-section py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold text-primary mb-3">Статистика платформы</h2>
+            <p class="lead text-muted">Мы помогаем решать проблемы в школах</p>
+        </div>
+        
+        <div class="row g-4 mb-5">
+            <!-- Общая статистика -->
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="stats-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-chat-dots fs-4"></i>
+                        </div>
+                        <h3 class="fw-bold text-primary mb-1">{{ total_messages }}</h3>
+                        <p class="text-muted mb-0">Всего сообщений</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="stats-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-clock fs-4"></i>
+                        </div>
+                        <h3 class="fw-bold text-warning mb-1">{{ pending_messages }}</h3>
+                        <p class="text-muted mb-0">Ожидают рассмотрения</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="stats-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-gear fs-4"></i>
+                        </div>
+                        <h3 class="fw-bold text-info mb-1">{{ in_progress_messages }}</h3>
+                        <p class="text-muted mb-0">В работе</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="stats-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-check-circle fs-4"></i>
+                        </div>
+                        <h3 class="fw-bold text-success mb-1">{{ resolved_messages }}</h3>
+                        <p class="text-muted mb-0">Решено</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Статистика по типам проблем -->
+        <div class="row g-4">
+            <div class="col-12">
+                <h4 class="text-center mb-4">Типы обращений</h4>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-3">
+                        <div class="stats-icon bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                            <i class="bi bi-exclamation-triangle fs-5"></i>
+                        </div>
+                        <h5 class="fw-bold text-danger mb-1">{{ bullying_count }}</h5>
+                        <p class="text-muted mb-0 small">Буллинг</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-3">
+                        <div class="stats-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                            <i class="bi bi-cash-coin fs-5"></i>
+                        </div>
+                        <h5 class="fw-bold text-warning mb-1">{{ extortion_count }}</h5>
+                        <p class="text-muted mb-0 small">Вымогательство</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-3">
+                        <div class="stats-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                            <i class="bi bi-person-x fs-5"></i>
+                        </div>
+                        <h5 class="fw-bold text-info mb-1">{{ harassment_count }}</h5>
+                        <p class="text-muted mb-0 small">Притеснения</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center p-3">
+                        <div class="stats-icon bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                            <i class="bi bi-three-dots fs-5"></i>
+                        </div>
+                        <h5 class="fw-bold text-secondary mb-1">{{ other_count }}</h5>
+                        <p class="text-muted mb-0 small">Другие</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Нужна помощь?</h2>
+        <p class="lead mb-4">Не оставайтесь один на один с проблемой. Обратитесь за помощью анонимно.</p>
+        <a href="/send-message/" class="btn btn-primary btn-lg">
+            <i class="bi bi-info-circle me-2"></i>Как отправить сообщение
+        </a>
+    </div>
+</div>
+{% endblock %}

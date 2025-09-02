@@ -1,0 +1,157 @@
+{% extends 'core/base.html' %}
+{% block title %}Сообщение #{{ message.id }} — Аноним Мектеп{% endblock %}
+{% block content %}
+<div class="admin-header bg-primary text-white py-4 mb-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="mb-0"><i class="bi bi-chat-dots me-2"></i>Сообщение #{{ message.id }}</h2>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div>
+                    {% if message.status == 'new' %}
+                        <span class="badge bg-danger fs-6">Новое</span>
+                    {% elif message.status == 'in_progress' %}
+                        <span class="badge bg-warning fs-6">В работе</span>
+                    {% elif message.status == 'resolved' %}
+                        <span class="badge bg-success fs-6">Решено</span>
+                    {% elif message.status == 'spam' %}
+                        <span class="badge bg-secondary fs-6">Спам</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Основная информация -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Информация о сообщении</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Школа:</label>
+                            <p class="mb-0">{{ message.school.name }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Тип проблемы:</label>
+                            <p class="mb-0">
+                                <span class="badge bg-warning">{{ message.get_problem_type_display }}</span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Дата создания:</label>
+                            <p class="mb-0">{{ message.created_at|date:'d.m.Y H:i' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Последнее обновление:</label>
+                            <p class="mb-0">{{ message.updated_at|date:'d.m.Y H:i' }}</p>
+                        </div>
+                        {% if message.contact %}
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Контактная информация:</label>
+                            <p class="mb-0">{{ message.contact }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Описание проблемы -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Описание проблемы</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ message.problem|linebreaks }}</p>
+                </div>
+            </div>
+
+            <!-- Ожидаемая помощь -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-heart me-2"></i>Ожидаемая помощь</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ message.help|linebreaks }}</p>
+                </div>
+            </div>
+
+            <!-- Комментарии -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-chat-square-text me-2"></i>Внутренние комментарии</h5>
+                </div>
+                <div class="card-body">
+                    {% for comment in message.comments.all %}
+                    <div class="border-start border-3 border-primary ps-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <strong>{% if comment.author %}{{ comment.author.username }}{% else %}Система{% endif %}</strong>
+                            <small class="text-muted">{{ comment.created_at|date:'d.m.Y H:i' }}</small>
+                        </div>
+                        <p class="mb-0">{{ comment.text|linebreaks }}</p>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted mb-0">Нет комментариев</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Управление статусом -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-gear me-2"></i>Управление</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="status" class="form-label fw-bold">Статус:</label>
+                            <select name="status" id="status" class="form-select">
+                                {% for key, val in status_choices %}
+                                <option value="{{ key }}" {% if message.status == key %}selected{% endif %}>{{ val }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-check-lg me-2"></i>Обновить статус
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Добавить комментарий -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Добавить комментарий</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Комментарий:</label>
+                            <textarea name="comment" id="comment" class="form-control" rows="4" placeholder="Введите ваш комментарий..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-send me-2"></i>Добавить комментарий
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'admin_messages' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Назад к списку
+        </a>
+    </div>
+</div>
+{% endblock %}

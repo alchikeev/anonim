@@ -1,0 +1,100 @@
+{% extends 'core/base.html' %}
+{% block title %}Отправить сообщение — Аноним Мектеп{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Шаг 2: Опишите проблему</h4>
+            </div>
+            <div class="card-body">
+                {% if is_general_message %}
+                    <p class="text-muted mb-3">
+                        Получатель: <strong>{{ school.name }}</strong><br>
+                        Тип проблемы: <strong>{{ problem_type_display }}</strong>
+                    </p>
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Ваше сообщение будет рассмотрено специалистами районного отдела образования.
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-3">
+                        Школа: <strong>{{ school.name }}</strong><br>
+                        Тип проблемы: <strong>{{ problem_type_display }}</strong>
+                    </p>
+                    <div class="alert alert-success mb-4">
+                        <i class="bi bi-shield-check me-2"></i>
+                        Сообщение будет отправлено администрации школы и районному отделу образования.
+                    </div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.problem.id_for_label }}" class="form-label">{{ form.problem.label }}</label>
+                        {{ form.problem }}
+                        {% if form.problem.errors %}
+                            <div class="text-danger">{{ form.problem.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.help.id_for_label }}" class="form-label">{{ form.help.label }}</label>
+                        {{ form.help }}
+                        {% if form.help.errors %}
+                            <div class="text-danger">{{ form.help.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.contact.id_for_label }}" class="form-label">{{ form.contact.label }}</label>
+                        {{ form.contact }}
+                        {% if form.contact.errors %}
+                            <div class="text-danger">{{ form.contact.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- reCAPTCHA v3 -->
+                    <div class="mb-4">
+                        <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+                        {% if form.non_field_errors %}
+                            <div class="text-danger mt-2">{{ form.non_field_errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                        <a href="{% url 'send_message' school.unique_code %}?step=1" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Назад
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            Отправить сообщение <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_public_key }}"></script>
+<script>
+// Инициализация reCAPTCHA v3
+grecaptcha.ready(function() {
+    grecaptcha.execute('{{ recaptcha_public_key }}', {action: 'submit'}).then(function(token) {
+        document.getElementById('recaptcha_token').value = token;
+    });
+});
+
+// Обновление токена при отправке формы
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    grecaptcha.ready(function() {
+        grecaptcha.execute('{{ recaptcha_public_key }}', {action: 'submit'}).then(function(token) {
+            document.getElementById('recaptcha_token').value = token;
+            e.target.submit();
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends 'core/base.html' %}
+{% block title %}Панель управления — Аноним Мектеп{% endblock %}
+{% block content %}
+<div class="admin-header bg-primary text-white py-4 mb-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="mb-0"><i class="bi bi-speedometer2 me-2"></i>Панель управления</h2>
+                <p class="mb-0 opacity-75">Добро пожаловать, {{ user.get_full_name|default:user.username }}!</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="dropdown">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-2"></i>{{ user.get_role_display }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'admin_logout' %}">
+                            <i class="bi bi-box-arrow-right me-2"></i>Выйти
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Статистика -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ stats.new_messages }}</h4>
+                            <p class="mb-0">Новых сообщений</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-exclamation-circle" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ stats.in_progress }}</h4>
+                            <p class="mb-0">В работе</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-clock" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ stats.resolved }}</h4>
+                            <p class="mb-0">Решено</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="mb-0">{{ stats.total_messages }}</h4>
+                            <p class="mb-0">Всего сообщений</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-chat-dots" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Быстрые действия -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Быстрые действия</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin_messages' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-chat-square-text me-2"></i>Просмотр сообщений
+                        </a>
+                        {% if user.role == 'super_admin' or user.role == 'rayon_otdel' or user.is_superuser %}
+                        <a href="{% url 'admin_schools' %}" class="btn btn-outline-success">
+                            <i class="bi bi-building me-2"></i>Управление школами
+                        </a>
+                        <a href="{% url 'admin_users' %}" class="btn btn-outline-warning">
+                            <i class="bi bi-people me-2"></i>Управление пользователями
+                        </a>
+                        {% endif %}
+                        {% if user.role == 'super_admin' or user.is_superuser %}
+                        <a href="{% url 'admin_content' %}" class="btn btn-outline-info">
+                            <i class="bi bi-file-text me-2"></i>Редактирование контента
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Блок для сообщений в районный отдел (только для районного отдела) -->
+        {% if user.role == 'rayon_otdel' and rayon_stats %}
+        <div class="col-md-6">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-building me-2"></i>Сообщения в районный отдел</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h4 class="text-danger mb-1">{{ rayon_stats.general_new }}</h4>
+                                <small class="text-muted">Новых</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h4 class="text-warning mb-1">{{ rayon_stats.general_in_progress }}</h4>
+                                <small class="text-muted">В работе</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h4 class="text-success mb-1">{{ rayon_stats.general_resolved }}</h4>
+                                <small class="text-muted">Решено</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h4 class="text-primary mb-1">{{ rayon_stats.general_total }}</h4>
+                                <small class="text-muted">Всего</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if recent_general_messages %}
+                    <h6 class="mb-3">Последние обращения:</h6>
+                    {% for message in recent_general_messages %}
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="flex-grow-1">
+                            <small class="text-muted">{{ message.created_at|date:"d.m.Y H:i" }}</small>
+                            <p class="mb-1 small">{{ message.problem|truncatechars:50 }}</p>
+                        </div>
+                        <span class="badge bg-{% if message.status == 'new' %}danger{% elif message.status == 'in_progress' %}warning{% else %}success{% endif %}">
+                            {{ message.get_status_display }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="text-muted mb-0">Нет сообщений в районный отдел</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Последние сообщения</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_messages %}
+                        {% for message in recent_messages %}
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ message.problem|truncatechars:40 }}</h6>
+                                <small class="text-muted">
+                                    {{ message.school.name }} • {{ message.get_problem_type_display }}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-{% if message.status == 'new' %}danger{% elif message.status == 'in_progress' %}warning{% elif message.status == 'resolved' %}success{% else %}secondary{% endif %}">
+                                    {{ message.get_status_display }}
+                                </span>
+                                <br>
+                                <small class="text-muted">{{ message.created_at|date:'d.m H:i' }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="text-center">
+                            <a href="{% url 'admin_messages' %}" class="btn btn-sm btn-outline-primary">
+                                Показать все сообщения
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">Нет сообщений</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
