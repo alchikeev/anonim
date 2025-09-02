@@ -1,14 +1,14 @@
+
 version: '3.8'
 
 services:
-  web:
+  anonim_web:
     build: .
     expose:
       - "8000"
     volumes:
-      - .:/app
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
+      - anonim_static_data:/app/staticfiles
+      - anonim_media_data:/app/media
     environment:
       - DJANGO_ENV=prod
       - DJANGO_DEBUG=False
@@ -25,15 +25,12 @@ services:
              gunicorn --bind 0.0.0.0:8000 --workers 3 anonim_mektep.wsgi:application"
     restart: unless-stopped
     networks:
-      - anonim_network
       - caddy_network
 
 volumes:
-  static_volume:
-  media_volume:
+  anonim_static_data:
+  anonim_media_data:
 
 networks:
-  anonim_network:
-    driver: bridge
   caddy_network:
     external: true

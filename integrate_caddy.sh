@@ -1,6 +1,23 @@
-# Конфигурация Caddy для "Аноним Мектеп"
-# Добавьте этот блок в ваш основной Caddyfile
+#!/bin/bash
 
+# Скрипт для интеграции конфигурации "Аноним Мектеп" в существующий Caddyfile
+# Этот скрипт добавляет конфигурацию для anonim-m.online в существующий Caddyfile
+
+echo "Интеграция конфигурации 'Аноним Мектеп' в Caddyfile..."
+
+# Проверяем, существует ли текущий Caddyfile
+if [ ! -f "/root/Caddyfile.current" ]; then
+    echo "Ошибка: Файл /root/Caddyfile.current не найден!"
+    exit 1
+fi
+
+# Создаем резервную копию
+cp /root/Caddyfile.current /root/Caddyfile.backup.$(date +%Y%m%d_%H%M%S)
+
+# Добавляем конфигурацию для anonim-m.online
+cat >> /root/Caddyfile.current << 'EOF'
+
+# Конфигурация для "Аноним Мектеп"
 anonim-m.online, www.anonim-m.online {
     encode zstd gzip
 
@@ -24,7 +41,7 @@ anonim-m.online, www.anonim-m.online {
     }
     respond @sensitive 404
 
-    # Прокси на Django приложение (сервис web внутри docker-сети anonim_network)
+    # Прокси на Django приложение (сервис anonim_web внутри docker-сети caddy_network)
     reverse_proxy anonim_web:8000 {
         header_up Host {host}
         header_up X-Real-IP {remote}
@@ -60,3 +77,8 @@ anonim-m.online, www.anonim-m.online {
         max_size 10MB
     }
 }
+EOF
+
+echo "Конфигурация успешно добавлена в Caddyfile!"
+echo "Для применения изменений перезапустите Caddy:"
+echo "docker restart tdp-caddy-1"
