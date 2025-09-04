@@ -261,7 +261,6 @@ School.objects.annotate(
 
 #### DEV (.env.dev)
 ```bash
-TELEGRAM_BOT_TOKEN=8149141841:AAGr5afpnozwkZJMt65qmQjrbgZBjfMHkdE
 TELEGRAM_BOT_USERNAME=anon_mektep_bot
 BASE_URL=http://127.0.0.1:8000
 ```

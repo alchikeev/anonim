@@ -1,5 +1,4 @@
-version: '3.8'
-
+# compose.yml
 services:
   web:
     build: .
@@ -28,3 +27,4 @@ volumes:
 networks:
   web:
     external: true
+

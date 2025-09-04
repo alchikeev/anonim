@@ -21,7 +21,7 @@ cp -r /root/anonim-mektep /root/backups/anonim-$(date +%Y%m%d_%H%M%S)/
 
 # Обновляем код
 cd /root/anonim-mektep
-git pull origin main
+
 
 # Собираем статические файлы
 docker compose -f docker-compose.caddy.yml exec anonim_web python manage.py collectstatic --noinput
