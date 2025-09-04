@@ -21,7 +21,7 @@ class Command(BaseCommand):
         
         # Telegram Bot настройки
         telegram_settings = {
-            'TELEGRAM_BOT_TOKEN': '8203837964:AAF8mErf22811XcprPHN3IusUCZU0lERcWI',
+            'TELEGRAM_BOT_TOKEN': 'your_telegram_bot_token_here',
             'TELEGRAM_BOT_USERNAME': 'anonim_mektep_bot',
         }
         

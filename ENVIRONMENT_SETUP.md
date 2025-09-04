@@ -57,7 +57,7 @@ RECAPTCHA_PRIVATE_KEY = из .env.prod
 ### **`.env.dev`** (уже существует)
 ```env
 DJANGO_ENV=dev
-TELEGRAM_BOT_TOKEN=8149141841:AAGr5afpnozwkZJMt65qmQjrbgZBjfMHkdE
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
 TELEGRAM_BOT_USERNAME=anon_mektep_bot
 TELEGRAM_WEBHOOK_URL=
 RECAPTCHA_PUBLIC_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
