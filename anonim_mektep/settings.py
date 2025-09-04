@@ -53,6 +53,17 @@ DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']  # Разрешаем все хосты для разработки
 
+# CSRF настройки для продакшена
+if DJANGO_ENV == 'prod':
+    CSRF_TRUSTED_ORIGINS = [
+        'https://anonim-m.online',
+        'https://www.anonim-m.online',
+    ]
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+    ]
 
 # Application definition
 
