@@ -1,5 +1,6 @@
 services:
   anonim-web:
+    container_name: anonim-web
     build:
       context: .
       args:
@@ -9,7 +10,7 @@ services:
     expose:
       - "8000"
     volumes:
-      - /srv/data_anonin:/data     # хостовая папка с БД
+      - /srv/data_anonin:/data
       - /srv/media_anonin:/app/media
     networks:
       - web
