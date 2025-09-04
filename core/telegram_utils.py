@@ -23,10 +23,16 @@ def notify_admins_about_message(message_obj):
     # Формируем сообщение
     problem_type_display = dict(message_obj.PROBLEM_TYPE_CHOICES).get(message_obj.problem_type, 'Неизвестно')
     
+    # Определяем получателя сообщения
+    if school:
+        recipient = f"🏫 <b>Школа:</b> {school.name}"
+    else:
+        recipient = "🏢 <b>Районный отдел образования</b>"
+    
     message_text = f"""
 🚨 <b>Новое сообщение #{message_obj.id}</b>
 
-🏫 <b>Школа:</b> {school.name}
+{recipient}
 📋 <b>Тип проблемы:</b> {problem_type_display}
 📝 <b>Описание:</b> {message_obj.problem[:200]}{'...' if len(message_obj.problem) > 200 else ''}
 ⏰ <b>Время:</b> {message_obj.created_at.strftime('%d.%m.%Y %H:%M')}
@@ -44,15 +50,16 @@ def notify_admins_about_message(message_obj):
         ]
     }
     
-    # Уведомление учителям по школе
-    teachers = User.objects.filter(role=User.TEACHER, school=school, is_active=True)
-    for teacher in teachers:
-        if hasattr(teacher, 'telegram_chat_id') and teacher.telegram_chat_id:
-            send_telegram_message(
-                teacher.telegram_chat_id, 
-                message_text,
-                reply_markup=inline_keyboard
-            )
+    # Уведомление учителям по школе (только если сообщение для конкретной школы)
+    if school:
+        teachers = User.objects.filter(role=User.TEACHER, school=school, is_active=True)
+        for teacher in teachers:
+            if hasattr(teacher, 'telegram_chat_id') and teacher.telegram_chat_id:
+                send_telegram_message(
+                    teacher.telegram_chat_id, 
+                    message_text,
+                    reply_markup=inline_keyboard
+                )
     
     # Уведомление районному отделу по всем школам
     rayon_admins = User.objects.filter(role=User.RAYON_OTDEL, is_active=True)

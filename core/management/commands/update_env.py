@@ -26,7 +26,7 @@ class Command(BaseCommand):
         }
         
         if env_type == 'dev':
-            telegram_settings['TELEGRAM_WEBHOOK_URL'] = 'https://127.0.0.1:8000/telegram/webhook/'
+            telegram_settings['TELEGRAM_WEBHOOK_URL'] = 'http://127.0.0.1:8009/telegram/webhook/'
         else:
             telegram_settings['TELEGRAM_WEBHOOK_URL'] = 'https://anonim-m.online/telegram/webhook/'
         

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import translation
 from django.conf import settings
 from django.contrib import messages
+from django.utils.translation import gettext_lazy as _
 
 from .forms import SendMessageForm, ProblemTypeForm
 from .models import School, EditablePage
@@ -43,15 +44,23 @@ def _get_message_statistics():
 
 def index(request):
     """Главная страница с статистикой платформы"""
+    print(f"DEBUG: Текущий язык в index: {translation.get_language()}")
+    print(f"DEBUG: Язык в сессии: {request.session.get('django_language')}")
     context = _get_message_statistics()
     return render(request, 'core/index.html', context)
 
 def set_language(request):
 	if request.method == 'POST':
 		language = request.POST.get('language')
+		print(f"DEBUG: Получен язык: {language}")
+		print(f"DEBUG: Доступные языки: {[lang[0] for lang in settings.LANGUAGES]}")
 		if language in [lang[0] for lang in settings.LANGUAGES]:
+			print(f"DEBUG: Активируем язык: {language}")
 			translation.activate(language)
 			request.session['django_language'] = language
+			print(f"DEBUG: Язык в сессии: {request.session.get('django_language')}")
+		else:
+			print(f"DEBUG: Язык {language} не найден в доступных языках")
 	return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def _get_or_create_page(page_key, title, default_content):
@@ -104,10 +113,19 @@ def knowledge_base(request):
 	"""База знаний"""
 	page = _get_or_create_page(
 		'knowledge_base', 
-		'База знаний', 
+		_('База знаний'), 
 		'<p>База знаний по вопросам безопасности в школах, профилактике буллинга и другим темам.</p>'
 	)
 	return render(request, 'core/knowledge_base.html', {'page': page})
+
+def instructions(request):
+	"""Инструкции"""
+	page = _get_or_create_page(
+		'instructions', 
+		_('Инструкции'), 
+		'<p>Подробные инструкции по использованию платформы Аноним Мектеп.</p>'
+	)
+	return render(request, 'core/instructions.html', {'page': page})
 
 
 def service_contacts(request):
@@ -131,12 +149,16 @@ def instructions(request):
 
 
 def send_message(request, unique_id):
-	# Определяем школу по уникальному коду из URL
-	school = get_object_or_404(School, unique_code=unique_id)
-	step = request.GET.get('step', '1')
-	
 	# Проверяем, является ли это общим сообщением
 	is_general_message = unique_id == 'general'
+	
+	if is_general_message:
+		school = None
+	else:
+		# Определяем школу по уникальному коду из URL
+		school = get_object_or_404(School, unique_code=unique_id)
+	
+	step = request.GET.get('step', '1')
 	
 	if step == '1':
 		# Первый шаг: выбор типа проблемы

@@ -9,6 +9,10 @@ def verify_recaptcha(token, remote_ip=None):
         # В режиме разработки без ключей пропускаем проверку
         return True
     
+    # Для тестовых ключей Google (начинающихся с 6LeIxAcTAAAA) пропускаем проверку
+    if settings.RECAPTCHA_PRIVATE_KEY.startswith('6LeIxAcTAAAA'):
+        return True
+    
     data = {
         'secret': settings.RECAPTCHA_PRIVATE_KEY,
         'response': token,

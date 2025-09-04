@@ -9,8 +9,14 @@ from .models import User, School, EditablePage
 
 @admin.register(EditablePage)
 class EditablePageAdmin(admin.ModelAdmin):
-	list_display = ('id', 'page', 'title')
+	list_display = ('id', 'page', 'language', 'title')
+	list_filter = ('page', 'language')
 	search_fields = ('title', 'content')
+	ordering = ('page', 'language')
+	
+	def get_queryset(self, request):
+		qs = super().get_queryset(request)
+		return qs.order_by('page', 'language')
 
 
 def get_site_domain():

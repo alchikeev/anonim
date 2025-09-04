@@ -12,6 +12,8 @@ class EditablePage(models.Model):
         ('faq', 'FAQ'),
         ('contacts', 'Полезные контакты'),
         ('what_to_do', 'Что делать, если...'),
+        ('instructions', 'Инструкции'),
+        ('knowledge_base', 'База знаний'),
     ]
     
     LANGUAGE_CHOICES = [

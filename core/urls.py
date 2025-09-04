@@ -1,11 +1,12 @@
 from django.urls import path
+from django.views.i18n import set_language
 from . import views
 from . import admin_views
 from . import telegram_views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('set-language/', views.set_language, name='set_language'),
+    path('set-language/', set_language, name='set_language'),
     path('about/', views.about, name='about'),
     path('faq/', views.faq, name='faq'),
     path('contacts/', views.contacts, name='contacts'),
