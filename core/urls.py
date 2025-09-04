@@ -34,6 +34,8 @@ urlpatterns = [
     path('staff/users/<int:user_id>/edit/', admin_views.edit_user, name='edit_user'),
     path('staff/users/<int:user_id>/delete/', admin_views.delete_user, name='delete_user'),
     path('staff/content/', admin_views.admin_content, name='admin_content'),
+    path('staff/content/edit/<int:page_id>/', admin_views.edit_page_content, name='edit_page_content'),
+    path('staff/content/create/', admin_views.create_page_content, name='create_page_content'),
     
     # Telegram Bot URLs
     path('telegram/webhook/', telegram_views.TelegramWebhookView.as_view(), name='telegram_webhook'),

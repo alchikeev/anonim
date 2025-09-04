@@ -16,7 +16,7 @@
                 
                 <div class="d-grid gap-3 d-md-flex justify-content-md-center">
                     <a href="/send-message/" class="btn btn-primary btn-lg px-4">
-                        <i class="bi bi-info-circle me-2"></i>{% trans "Отправить сообщение" %}
+                        <i class="bi bi-send me-2"></i>{% trans "Отправить сообщение" %}
                     </a>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                 <div class="card h-100 text-center">
                     <div class="card-body">
                         <div class="mb-3">
-                            <i class="bi bi-qr-code text-primary" style="font-size: 3rem;"></i>
+                            <i class="bi bi-qr-code"></i>
                         </div>
                         <h5 class="card-title">{% trans "QR-код школы" %}</h5>
                         <p class="card-text">{% trans "Отсканируйте QR-код в вашей школе для отправки сообщения. Каждая школа имеет свой уникальный код." %}</p>
@@ -42,7 +42,7 @@
                 <div class="card h-100 text-center">
                     <div class="card-body">
                         <div class="mb-3">
-                            <i class="bi bi-shield-check text-primary" style="font-size: 3rem;"></i>
+                            <i class="bi bi-shield-check"></i>
                         </div>
                         <h5 class="card-title">{% trans "Полная анонимность" %}</h5>
                         <p class="card-text">{% trans "Ваши сообщения не содержат личных данных и не отслеживаются. Мы не сохраняем IP-адреса или другую идентифицирующую информацию." %}</p>
@@ -53,7 +53,7 @@
                 <div class="card h-100 text-center">
                     <div class="card-body">
                         <div class="mb-3">
-                            <i class="bi bi-lightning text-primary" style="font-size: 3rem;"></i>
+                            <i class="bi bi-lightning"></i>
                         </div>
                         <h5 class="card-title">{% trans "Быстрая помощь" %}</h5>
                         <p class="card-text">{% trans "Сообщения мгновенно передаются администрации школы и районному отделу образования для оперативного реагирования." %}</p>
@@ -65,58 +65,58 @@
 </div>
 
 <!-- Статистика -->
-<div class="stats-section py-5 bg-light">
+<div class="stats-section py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-6 fw-bold text-primary mb-3">{% trans "Статистика платформы" %}</h2>
+            <h2 class="display-6 fw-bold mb-3">{% trans "Статистика платформы" %}</h2>
             <p class="lead text-muted">{% trans "Мы помогаем решать проблемы в школах" %}</p>
         </div>
         
         <div class="row g-4 mb-5">
             <!-- Общая статистика -->
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body text-center p-4">
-                        <div class="stats-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="bi bi-chat-dots fs-4"></i>
+                        <div class="stats-icon text-primary mb-3">
+                            <i class="bi bi-chat-dots fs-1"></i>
                         </div>
-                        <h3 class="fw-bold text-primary mb-1">{{ total_messages }}</h3>
+                        <div class="stats-number">{{ total_messages }}</div>
                         <p class="text-muted mb-0">{% trans "Всего сообщений" %}</p>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body text-center p-4">
-                        <div class="stats-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="bi bi-clock fs-4"></i>
+                        <div class="stats-icon text-warning mb-3">
+                            <i class="bi bi-clock fs-1"></i>
                         </div>
-                        <h3 class="fw-bold text-warning mb-1">{{ pending_messages }}</h3>
+                        <div class="stats-number">{{ pending_messages }}</div>
                         <p class="text-muted mb-0">{% trans "Ожидают рассмотрения" %}</p>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body text-center p-4">
-                        <div class="stats-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="bi bi-gear fs-4"></i>
+                        <div class="stats-icon text-info mb-3">
+                            <i class="bi bi-gear fs-1"></i>
                         </div>
-                        <h3 class="fw-bold text-info mb-1">{{ in_progress_messages }}</h3>
+                        <div class="stats-number">{{ in_progress_messages }}</div>
                         <p class="text-muted mb-0">{% trans "В работе" %}</p>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-3">
-                <div class="card border-0 shadow-sm h-100">
+                <div class="card h-100">
                     <div class="card-body text-center p-4">
-                        <div class="stats-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="bi bi-check-circle fs-4"></i>
+                        <div class="stats-icon text-success mb-3">
+                            <i class="bi bi-check-circle fs-1"></i>
                         </div>
-                        <h3 class="fw-bold text-success mb-1">{{ resolved_messages }}</h3>
+                        <div class="stats-number">{{ resolved_messages }}</div>
                         <p class="text-muted mb-0">{% trans "Решено" %}</p>
                     </div>
                 </div>

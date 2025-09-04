@@ -1,17 +1,26 @@
 {% extends 'core/base.html' %}
 {% block title %}{{ page.title }} — Аноним Мектеп{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">{{ page.title }}</h2>
+<div class="page-header">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="page-icon mb-4">
+                    <i class="bi bi-book"></i>
                 </div>
-                <div class="card-body">
-                    <div class="content">
-                        {{ page.content|safe }}
-                    </div>
+                <h1 class="page-title">{{ page.title }}</h1>
+                <p class="page-subtitle">Полезная информация и ресурсы</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="content-card">
+                <div class="content-body">
+                    {{ page.content|safe }}
                 </div>
             </div>
         </div>

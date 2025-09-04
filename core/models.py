@@ -9,9 +9,8 @@ class EditablePage(models.Model):
     
     PAGE_CHOICES = [
         ('about', 'О проекте'),
-        ('faq', 'FAQ'),
-        ('contacts', 'Полезные контакты'),
-        ('what_to_do', 'Что делать, если...'),
+        ('faq', 'Вопросы-ответы'),
+        ('service_contacts', 'Контакты служб'),
         ('instructions', 'Инструкции'),
         ('knowledge_base', 'База знаний'),
     ]

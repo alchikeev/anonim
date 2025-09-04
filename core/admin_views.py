@@ -360,10 +360,117 @@ def admin_content(request):
         messages.error(request, 'У вас нет доступа к этой странице.')
         return redirect('admin_dashboard')
     
-    pages = EditablePage.objects.all()
+    # Получаем все страницы, сгруппированные по типу
+    pages = EditablePage.objects.all().order_by('page', 'language')
+    
+    # Группируем страницы по типу для удобного отображения
+    pages_by_type = {}
+    for page in pages:
+        if page.page not in pages_by_type:
+            pages_by_type[page.page] = {}
+        pages_by_type[page.page][page.language] = page
     
     context = {
-        'pages': pages,
+        'pages_by_type': pages_by_type,
+        'page_choices': EditablePage.PAGE_CHOICES,
+        'language_choices': EditablePage.LANGUAGE_CHOICES,
     }
     
     return render(request, 'core/admin_content.html', context)
+
+@login_required
+def edit_page_content(request, page_id):
+    """Редактирование контента страницы"""
+    if request.user.role != 'super_admin' and not request.user.is_superuser:
+        messages.error(request, 'У вас нет доступа к этой странице.')
+        return redirect('admin_dashboard')
+    
+    page = get_object_or_404(EditablePage, id=page_id)
+    
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        content = request.POST.get('content', '').strip()
+        
+        if not title:
+            messages.error(request, 'Заголовок не может быть пустым')
+            return render(request, 'core/edit_page_content.html', {'page': page})
+        
+        if not content:
+            messages.error(request, 'Содержание не может быть пустым')
+            return render(request, 'core/edit_page_content.html', {'page': page})
+        
+        page.title = title
+        page.content = content
+        page.save()
+        
+        messages.success(request, f'Страница "{page.get_page_display()}" ({page.get_language_display()}) успешно обновлена')
+        return redirect('admin_content')
+    
+    return render(request, 'core/edit_page_content.html', {'page': page})
+
+@login_required
+def create_page_content(request):
+    """Создание новой страницы контента"""
+    if request.user.role != 'super_admin' and not request.user.is_superuser:
+        messages.error(request, 'У вас нет доступа к этой странице.')
+        return redirect('admin_dashboard')
+    
+    if request.method == 'POST':
+        page_type = request.POST.get('page_type', '').strip()
+        language = request.POST.get('language', '').strip()
+        title = request.POST.get('title', '').strip()
+        content = request.POST.get('content', '').strip()
+        
+        if not page_type or page_type not in dict(EditablePage.PAGE_CHOICES):
+            messages.error(request, 'Неверный тип страницы')
+            return render(request, 'core/create_page_content.html', {
+                'page_choices': EditablePage.PAGE_CHOICES,
+                'language_choices': EditablePage.LANGUAGE_CHOICES
+            })
+        
+        if not language or language not in dict(EditablePage.LANGUAGE_CHOICES):
+            messages.error(request, 'Неверный язык')
+            return render(request, 'core/create_page_content.html', {
+                'page_choices': EditablePage.PAGE_CHOICES,
+                'language_choices': EditablePage.LANGUAGE_CHOICES
+            })
+        
+        if not title:
+            messages.error(request, 'Заголовок не может быть пустым')
+            return render(request, 'core/create_page_content.html', {
+                'page_choices': EditablePage.PAGE_CHOICES,
+                'language_choices': EditablePage.LANGUAGE_CHOICES
+            })
+        
+        if not content:
+            messages.error(request, 'Содержание не может быть пустым')
+            return render(request, 'core/create_page_content.html', {
+                'page_choices': EditablePage.PAGE_CHOICES,
+                'language_choices': EditablePage.LANGUAGE_CHOICES
+            })
+        
+        # Проверяем, не существует ли уже такая страница
+        if EditablePage.objects.filter(page=page_type, language=language).exists():
+            messages.error(request, 'Страница с таким типом и языком уже существует')
+            return render(request, 'core/create_page_content.html', {
+                'page_choices': EditablePage.PAGE_CHOICES,
+                'language_choices': EditablePage.LANGUAGE_CHOICES
+            })
+        
+        page = EditablePage.objects.create(
+            page=page_type,
+            language=language,
+            title=title,
+            content=content
+        )
+        
+        messages.success(request, f'Страница "{page.get_page_display()}" ({page.get_language_display()}) успешно создана')
+        return redirect('admin_content')
+    
+    # GET запрос - показываем форму создания
+    context = {
+        'page_choices': EditablePage.PAGE_CHOICES,
+        'language_choices': EditablePage.LANGUAGE_CHOICES,
+    }
+    
+    return render(request, 'core/create_page_content.html', context)

@@ -1,16 +1,23 @@
 {% extends 'core/base.html' %}
 {% block title %}Панель управления — Аноним Мектеп{% endblock %}
 {% block content %}
-<div class="admin-header bg-primary text-white py-4 mb-4">
+<div class="admin-header py-5 mb-5">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-8">
-                <h2 class="mb-0"><i class="bi bi-speedometer2 me-2"></i>Панель управления</h2>
-                <p class="mb-0 opacity-75">Добро пожаловать, {{ user.get_full_name|default:user.username }}!</p>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="admin-icon me-3">
+                        <i class="bi bi-speedometer2"></i>
+                    </div>
+                    <div>
+                        <h2 class="mb-0">Панель управления</h2>
+                        <p class="mb-0 text-muted">Добро пожаловать, {{ user.get_full_name|default:user.username }}!</p>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4 text-md-end">
                 <div class="dropdown">
-                    <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                         <i class="bi bi-person-circle me-2"></i>{{ user.get_role_display }}
                     </button>
                     <ul class="dropdown-menu">
@@ -28,15 +35,15 @@
     <!-- Статистика -->
     <div class="row g-4 mb-5">
         <div class="col-md-3">
-            <div class="card bg-danger text-white">
+            <div class="card stats-card stats-card-danger">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h4 class="mb-0">{{ stats.new_messages }}</h4>
-                            <p class="mb-0">Новых сообщений</p>
+                            <div class="stats-number">{{ stats.new_messages }}</div>
+                            <p class="stats-label">Новых сообщений</p>
                         </div>
-                        <div class="align-self-center">
-                            <i class="bi bi-exclamation-circle" style="font-size: 2rem;"></i>
+                        <div class="stats-icon">
+                            <i class="bi bi-exclamation-circle"></i>
                         </div>
                     </div>
                 </div>
@@ -44,15 +51,15 @@
         </div>
         
         <div class="col-md-3">
-            <div class="card bg-warning text-white">
+            <div class="card stats-card stats-card-warning">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h4 class="mb-0">{{ stats.in_progress }}</h4>
-                            <p class="mb-0">В работе</p>
+                            <div class="stats-number">{{ stats.in_progress }}</div>
+                            <p class="stats-label">В работе</p>
                         </div>
-                        <div class="align-self-center">
-                            <i class="bi bi-clock" style="font-size: 2rem;"></i>
+                        <div class="stats-icon">
+                            <i class="bi bi-clock"></i>
                         </div>
                     </div>
                 </div>
@@ -60,15 +67,15 @@
         </div>
         
         <div class="col-md-3">
-            <div class="card bg-success text-white">
+            <div class="card stats-card stats-card-success">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h4 class="mb-0">{{ stats.resolved }}</h4>
-                            <p class="mb-0">Решено</p>
+                            <div class="stats-number">{{ stats.resolved }}</div>
+                            <p class="stats-label">Решено</p>
                         </div>
-                        <div class="align-self-center">
-                            <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
+                        <div class="stats-icon">
+                            <i class="bi bi-check-circle"></i>
                         </div>
                     </div>
                 </div>
@@ -76,15 +83,15 @@
         </div>
         
         <div class="col-md-3">
-            <div class="card bg-info text-white">
+            <div class="card stats-card stats-card-info">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h4 class="mb-0">{{ stats.total_messages }}</h4>
-                            <p class="mb-0">Всего сообщений</p>
+                            <div class="stats-number">{{ stats.total_messages }}</div>
+                            <p class="stats-label">Всего сообщений</p>
                         </div>
-                        <div class="align-self-center">
-                            <i class="bi bi-chat-dots" style="font-size: 2rem;"></i>
+                        <div class="stats-icon">
+                            <i class="bi bi-chat-dots"></i>
                         </div>
                     </div>
                 </div>
@@ -95,25 +102,27 @@
     <!-- Быстрые действия -->
     <div class="row g-4 mb-5">
         <div class="col-md-6">
-            <div class="card">
+            <div class="card admin-card">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Быстрые действия</h5>
+                    <h5 class="mb-0">
+                        <i class="bi bi-lightning me-2"></i>Быстрые действия
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="{% url 'admin_messages' %}" class="btn btn-outline-primary">
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'admin_messages' %}" class="btn btn-outline-primary admin-action-btn">
                             <i class="bi bi-chat-square-text me-2"></i>Просмотр сообщений
                         </a>
                         {% if user.role == 'super_admin' or user.role == 'rayon_otdel' or user.is_superuser %}
-                        <a href="{% url 'admin_schools' %}" class="btn btn-outline-success">
+                        <a href="{% url 'admin_schools' %}" class="btn btn-outline-success admin-action-btn">
                             <i class="bi bi-building me-2"></i>Управление школами
                         </a>
-                        <a href="{% url 'admin_users' %}" class="btn btn-outline-warning">
+                        <a href="{% url 'admin_users' %}" class="btn btn-outline-warning admin-action-btn">
                             <i class="bi bi-people me-2"></i>Управление пользователями
                         </a>
                         {% endif %}
                         {% if user.role == 'super_admin' or user.is_superuser %}
-                        <a href="{% url 'admin_content' %}" class="btn btn-outline-info">
+                        <a href="{% url 'admin_content' %}" class="btn btn-outline-info admin-action-btn">
                             <i class="bi bi-file-text me-2"></i>Редактирование контента
                         </a>
                         {% endif %}
@@ -179,30 +188,34 @@
         {% endif %}
         
         <div class="col-md-6">
-            <div class="card">
+            <div class="card admin-card">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Последние сообщения</h5>
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2"></i>Последние сообщения
+                    </h5>
                 </div>
                 <div class="card-body">
                     {% if recent_messages %}
                         {% for message in recent_messages %}
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">{{ message.problem|truncatechars:40 }}</h6>
-                                <small class="text-muted">
-                                    {{ message.school.name }} • {{ message.get_problem_type_display }}
-                                </small>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge bg-{% if message.status == 'new' %}danger{% elif message.status == 'in_progress' %}warning{% elif message.status == 'resolved' %}success{% else %}secondary{% endif %}">
-                                    {{ message.get_status_display }}
-                                </span>
-                                <br>
-                                <small class="text-muted">{{ message.created_at|date:'d.m H:i' }}</small>
+                        <div class="message-item">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ message.problem|truncatechars:40 }}</h6>
+                                    <small class="text-muted">
+                                        {{ message.school.name }} • {{ message.get_problem_type_display }}
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge status-badge status-{{ message.status }}">
+                                        {{ message.get_status_display }}
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">{{ message.created_at|date:'d.m H:i' }}</small>
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
-                        <div class="text-center">
+                        <div class="text-center mt-3">
                             <a href="{% url 'admin_messages' %}" class="btn btn-sm btn-outline-primary">
                                 Показать все сообщения
                             </a>
