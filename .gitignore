@@ -147,6 +147,16 @@ media/
 staticfiles/
 *.sqlite3
 *.db
+/.data/
+/staticfiles/
+db.sqlite3
+
+# Environment files
+.env*
+
+# серверные прокси-конфиги — только примеры
+reverse-proxy/caddy/Caddyfile
+reverse-proxy/caddy/sites/anonim.caddy
 
 # Test files
 test_*.py

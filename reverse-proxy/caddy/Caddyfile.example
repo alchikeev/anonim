@@ -1,0 +1,62 @@
+# Пример конфигурации Caddy для anonim-m.online
+# Скопируйте этот файл в /etc/caddy/Caddyfile на сервере
+
+anonim-m.online, www.anonim-m.online {
+    encode zstd gzip
+
+    # Раздача статических файлов из Docker volume
+    handle_path /static/* {
+        root * /var/lib/docker/volumes/anonim_static_data/_data
+        file_server
+        header Cache-Control "public, max-age=31536000, immutable"
+    }
+
+    # Раздача медиа файлов из Docker volume
+    handle_path /media/* {
+        root * /var/lib/docker/volumes/anonim_media_data/_data
+        file_server
+        header Cache-Control "public, max-age=31536000"
+    }
+
+    # Безопасность - блокируем доступ к служебным файлам
+    @sensitive {
+        path /.env* /.git* /docker-compose* /Dockerfile* /nginx.conf
+    }
+    respond @sensitive 404
+
+    # Прокси на Django приложение (сервис anonim-web в docker-сети web)
+    reverse_proxy anonim-web:8000 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-Port {server_port}
+    }
+
+    # Логирование
+    log {
+        output stdout
+        format console
+        level INFO
+    }
+
+    # Заголовки безопасности
+    header {
+        # Безопасность
+        X-Frame-Options "DENY"
+        X-Content-Type-Options "nosniff"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        
+        # HSTS для HTTPS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        
+        # Удаляем заголовки сервера
+        -Server
+    }
+
+    # Ограничение размера загружаемых файлов
+    request_body {
+        max_size 10MB
+    }
+}
