@@ -10,8 +10,8 @@ services:
     expose:
       - "8000"
     volumes:
-      - /srv/data_anonin:/data
-      - /srv/media_anonin:/app/media
+      - /srv/data_anonim:/data
+      - /srv/media_anonim:/app/media
     networks:
       - web
     restart: unless-stopped

@@ -138,7 +138,7 @@ WSGI_APPLICATION = 'anonim_mektep.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DJANGO_DB_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.getenv('DJANGO_DB_NAME', BASE_DIR / 'db.sqlite3'),
+        'NAME': os.getenv('DJANGO_DB_NAME', '/data/db.sqlite3' if DJANGO_ENV == 'prod' else BASE_DIR / 'db.sqlite3'),
         'USER': os.getenv('DJANGO_DB_USER', ''),
         'PASSWORD': os.getenv('DJANGO_DB_PASSWORD', ''),
         'HOST': os.getenv('DJANGO_DB_HOST', ''),
