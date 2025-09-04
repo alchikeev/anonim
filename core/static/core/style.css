@@ -1212,6 +1212,122 @@ h3, h4, h5, h6 {
     }
 }
 
+/* Формы отправки сообщений */
+.message-form-header {
+    background: linear-gradient(135deg, var(--light-blue) 0%, var(--purple) 100%);
+    color: var(--white);
+    border: none;
+    border-radius: 16px 16px 0 0;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(105, 197, 248, 0.3);
+}
+
+.message-form-header h4 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.message-form-card {
+    border: 1px solid rgba(209, 213, 219, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.message-form-body {
+    padding: 2rem;
+}
+
+.message-form-info {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+}
+
+/* Исправление переноса длинного текста */
+.alert {
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+}
+
+/* Общие стили для полей ввода */
+.form-control, .form-select, textarea {
+    max-width: 100%;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Стили для textarea */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+    max-height: 200px;
+}
+
+/* Стили для reCAPTCHA */
+.g-recaptcha {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Исправление viewport для мобильных устройств */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+    
+    .container, .container-fluid {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    /* Принудительное ограничение ширины */
+    .message-form-card {
+        width: calc(100% - 2rem);
+        max-width: calc(100vw - 2rem);
+    }
+}
+
+/* Исправление для мобильных устройств */
+@media (max-width: 768px) {
+    .message-form-body {
+        padding: 1.5rem;
+    }
+    
+    .alert {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    /* Исправление полей ввода на мобильных */
+    .form-control, .form-select, textarea {
+        max-width: 100%;
+        box-sizing: border-box;
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    /* Исправление для textarea */
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+        max-height: 200px;
+    }
+    
+    /* Исправление для reCAPTCHA */
+    .g-recaptcha {
+        max-width: 100%;
+        overflow: hidden;
+    }
+}
+
 /* Страница входа */
 .login-page {
     min-height: 100vh;
@@ -1330,6 +1446,57 @@ h3, h4, h5, h6 {
     background: rgba(245, 245, 245, 0.5);
     border-radius: 12px;
     border: 1px solid rgba(209, 213, 219, 0.3);
+}
+
+/* Адаптивность для форм отправки сообщений */
+@media (max-width: 768px) {
+    .message-form-header {
+        padding: 1rem;
+    }
+    
+    .message-form-header h4 {
+        font-size: 1.1rem;
+    }
+    
+    .message-form-card {
+        margin: 0 1rem;
+        overflow: hidden;
+    }
+    
+    .message-form-body {
+        padding: 1.5rem;
+        overflow: hidden;
+    }
+    
+    .alert {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        max-width: 100%;
+    }
+    
+    .message-form-info {
+        margin-top: 1rem;
+    }
+    
+    /* Дополнительные исправления для мобильных */
+    .form-control, .form-select, textarea {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Исправление для контейнера формы */
+    .row {
+        margin: 0;
+    }
+    
+    .col-md-8, .col-lg-6 {
+        padding: 0;
+    }
 }
 
 /* Адаптивность для страницы входа */

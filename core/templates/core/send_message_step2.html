@@ -1,31 +1,24 @@
 {% extends 'core/base.html' %}
-{% block title %}Отправить сообщение — Аноним Мектеп{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Отправить сообщение" %} — Аноним Мектеп{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Шаг 2: Опишите проблему</h4>
+        <div class="message-form-card">
+            <div class="message-form-header">
+                <h4>{% trans "Шаг 2: Опишите проблему" %}</h4>
             </div>
-            <div class="card-body">
+            <div class="message-form-body">
                 {% if is_general_message %}
                     <p class="text-muted mb-3">
-                        Получатель: <strong>Районный отдел образования</strong><br>
-                        Тип проблемы: <strong>{{ problem_type_display }}</strong>
+                        {% trans "Получатель" %}: <strong>{% trans "Районный отдел образования" %}</strong><br>
+                        {% trans "Тип проблемы" %}: <strong>{{ problem_type_display }}</strong>
                     </p>
-                    <div class="alert alert-info mb-4">
-                        <i class="bi bi-info-circle me-2"></i>
-                        Ваше сообщение будет рассмотрено специалистами районного отдела образования.
-                    </div>
                 {% else %}
                     <p class="text-muted mb-3">
-                        Школа: <strong>{{ school.name }}</strong><br>
-                        Тип проблемы: <strong>{{ problem_type_display }}</strong>
+                        {% trans "Школа" %}: <strong>{{ school.name }}</strong><br>
+                        {% trans "Тип проблемы" %}: <strong>{{ problem_type_display }}</strong>
                     </p>
-                    <div class="alert alert-success mb-4">
-                        <i class="bi bi-shield-check me-2"></i>
-                        Сообщение будет отправлено администрации школы и районному отделу образования.
-                    </div>
                 {% endif %}
                 
                 <form method="post">
@@ -66,18 +59,30 @@
                     <div class="d-grid gap-2 d-md-flex justify-content-md-between">
                         {% if is_general_message %}
                             <a href="{% url 'send_message' 'general' %}?step=1" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left"></i> Назад
+                                <i class="bi bi-arrow-left"></i> {% trans "Назад" %}
                             </a>
                         {% else %}
                             <a href="{% url 'send_message' school.unique_code %}?step=1" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left"></i> Назад
+                                <i class="bi bi-arrow-left"></i> {% trans "Назад" %}
                             </a>
                         {% endif %}
                         <button type="submit" class="btn btn-primary">
-                            Отправить сообщение <i class="bi bi-send"></i>
+                            {% trans "Отправить сообщение" %} <i class="bi bi-send"></i>
                         </button>
                     </div>
                 </form>
+                
+                {% if is_general_message %}
+                    <div class="alert alert-info message-form-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {% trans "Ваше сообщение будет рассмотрено специалистами районного отдела образования." %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-success message-form-info">
+                        <i class="bi bi-shield-check me-2"></i>
+                        {% trans "Сообщение будет отправлено администрации школы и районному отделу образования." %}
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

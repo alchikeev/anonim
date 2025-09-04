@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
-{% block title %}Сообщение отправлено — Аноним Мектеп{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Сообщение отправлено" %} — Аноним Мектеп{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
@@ -8,16 +9,14 @@
                 <div class="mb-4">
                     <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
                 </div>
-                <h2 class="text-success mb-3">Сообщение успешно отправлено!</h2>
+                <h2 class="text-success mb-3">{% trans "Сообщение успешно отправлено!" %}</h2>
                 <p class="text-muted mb-4">
-                    Ваше сообщение было передано администрации школы. 
-                    Мы рассмотрим его в ближайшее время и при необходимости свяжемся с вами.
+                    {% trans "Ваше сообщение было передано администрации школы. Мы рассмотрим его в ближайшее время и при необходимости свяжемся с вами." %}
                 </p>
                 <div class="alert alert-info">
-                    <strong>Важно:</strong> Ваше сообщение полностью анонимно. 
-                    Мы не сохраняем никаких данных, которые могут вас идентифицировать.
+                    <strong>{% trans "Важно" %}:</strong> {% trans "Ваше сообщение полностью анонимно. Мы не сохраняем никаких данных, которые могут вас идентифицировать." %}
                 </div>
-                <a href="/" class="btn btn-primary">Вернуться на главную</a>
+                <a href="/" class="btn btn-primary">{% trans "Вернуться на главную" %}</a>
             </div>
         </div>
     </div>

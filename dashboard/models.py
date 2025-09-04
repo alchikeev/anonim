@@ -1,5 +1,6 @@
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from core.models import User
 
 class Message(models.Model):
@@ -8,10 +9,10 @@ class Message(models.Model):
 	STATUS_RESOLVED = 'resolved'
 	STATUS_SPAM = 'spam'
 	STATUS_CHOICES = [
-		(STATUS_NEW, 'Новое'),
-		(STATUS_IN_PROGRESS, 'В работе'),
-		(STATUS_RESOLVED, 'Решено'),
-		(STATUS_SPAM, 'Спам'),
+		(STATUS_NEW, _('Новое')),
+		(STATUS_IN_PROGRESS, _('В работе')),
+		(STATUS_RESOLVED, _('Решено')),
+		(STATUS_SPAM, _('Спам')),
 	]
 
 	PROBLEM_TYPE_BULLYING = 'bullying'
@@ -21,12 +22,12 @@ class Message(models.Model):
 	PROBLEM_TYPE_ACADEMIC = 'academic'
 	PROBLEM_TYPE_OTHER = 'other'
 	PROBLEM_TYPE_CHOICES = [
-		(PROBLEM_TYPE_BULLYING, 'Буллинг'),
-		(PROBLEM_TYPE_EXTORTION, 'Вымогательство'),
-		(PROBLEM_TYPE_VIOLENCE, 'Насилие'),
-		(PROBLEM_TYPE_DISCRIMINATION, 'Дискриминация'),
-		(PROBLEM_TYPE_ACADEMIC, 'Академические проблемы'),
-		(PROBLEM_TYPE_OTHER, 'Другое'),
+		(PROBLEM_TYPE_BULLYING, _('Буллинг')),
+		(PROBLEM_TYPE_EXTORTION, _('Вымогательство')),
+		(PROBLEM_TYPE_VIOLENCE, _('Насилие')),
+		(PROBLEM_TYPE_DISCRIMINATION, _('Дискриминация')),
+		(PROBLEM_TYPE_ACADEMIC, _('Академические проблемы')),
+		(PROBLEM_TYPE_OTHER, _('Другое')),
 	]
 
 	problem = models.TextField()
