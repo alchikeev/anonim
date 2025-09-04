@@ -16,6 +16,31 @@ services:
       - web
     restart: unless-stopped
 
+  telegram-bot:
+    container_name: anonim-telegram-bot
+    build:
+      context: .
+      args:
+        DJANGO_ENV: prod
+    env_file:
+      - .env.prod
+    command: python manage.py telegram_polling
+    volumes:
+      - /srv/data_anonim:/data
+      - /srv/media_anonim:/app/media
+    networks:
+      - web
+    restart: unless-stopped
+    depends_on:
+      - anonim-web
+    # Опционально: можно добавить healthcheck для мониторинга
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "telegram_bot", "test"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
 networks:
   web:
     external: true

@@ -1,0 +1,39 @@
+services:
+  anonim-web:
+    container_name: anonim-web-dev
+    build:
+      context: .
+      args:
+        DJANGO_ENV: dev
+    env_file:
+      - .env.dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - /app/venv
+    networks:
+      - web
+    restart: unless-stopped
+
+  telegram-bot:
+    container_name: anonim-telegram-bot-dev
+    build:
+      context: .
+      args:
+        DJANGO_ENV: dev
+    env_file:
+      - .env.dev
+    command: python manage.py telegram_polling
+    volumes:
+      - .:/app
+      - /app/venv
+    networks:
+      - web
+    restart: unless-stopped
+    depends_on:
+      - anonim-web
+
+networks:
+  web:
+    driver: bridge
